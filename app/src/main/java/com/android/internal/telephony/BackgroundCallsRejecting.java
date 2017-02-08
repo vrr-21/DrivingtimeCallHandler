@@ -21,6 +21,7 @@ import com.example.varunrao.drivingtimecallhandler.MainActivity;
 import com.example.varunrao.drivingtimecallhandler.R;
 
 import java.lang.reflect.Method;
+import java.util.Vector;
 
 /**
  * Created by varunrao on 09/02/17.
@@ -33,7 +34,7 @@ public class BackgroundCallsRejecting extends Service {
         return null;
     }
     NotificationManager notificationManager;
-
+    Vector<String> callersFromContactList=new Vector<String>();
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(getApplicationContext(),"All Calls to be rejected now.", Toast.LENGTH_LONG).show();
@@ -68,7 +69,10 @@ public class BackgroundCallsRejecting extends Service {
                         if(name.equals("Not Found"))
                             Toast.makeText(getApplicationContext(),"Call From "+number+".Rejected.", Toast.LENGTH_SHORT).show();
                         else
+                        {
+                            callersFromContactList.add(name);
                             Toast.makeText(getApplicationContext(),"Call From "+name+".Rejected.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                     catch(Exception e)
                     {
@@ -103,6 +107,13 @@ public class BackgroundCallsRejecting extends Service {
     @Override
     public void onDestroy() {
         Toast.makeText(getApplicationContext(),"Calls now available", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Callers who had called:", Toast.LENGTH_LONG).show();
+        while(callersFromContactList.size()!=0)
+        {
+            String n=callersFromContactList.elementAt(0);
+            Toast.makeText(getApplicationContext(),n, Toast.LENGTH_LONG).show();
+            callersFromContactList.removeElementAt(0);
+        }
         notificationManager.cancel(0);
         super.onDestroy();
     }
