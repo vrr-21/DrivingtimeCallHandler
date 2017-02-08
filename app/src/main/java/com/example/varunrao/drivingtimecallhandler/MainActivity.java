@@ -1,8 +1,13 @@
 package com.example.varunrao.drivingtimecallhandler;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
@@ -19,10 +24,71 @@ import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String[] perms = {Manifest.permission.READ_CONTACTS,
+                          Manifest.permission.READ_PHONE_STATE,
+                          Manifest.permission.CALL_PHONE,
+                          Manifest.permission.MODIFY_PHONE_STATE,
+                          Manifest.permission.SEND_SMS};
+
+        int permsRequestCode = 200;
+
+        ActivityCompat.requestPermissions(this,perms, permsRequestCode);
+
+        //Permission Asking Code: Before one
+        /*if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS)!= PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_PHONE_STATE)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_PHONE_STATE},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CALL_PHONE)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CALL_PHONE},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.MODIFY_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.MODIFY_PHONE_STATE)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.MODIFY_PHONE_STATE},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+            }
+        }*/
 
         SharedPreferences getCurrentMode = getApplicationContext().getSharedPreferences("currentState", MODE_PRIVATE);
         final SharedPreferences.Editor editor = getCurrentMode.edit();
@@ -74,5 +140,49 @@ public class MainActivity extends AppCompatActivity {
                 stopService(new Intent(getBaseContext(),BackgroundCallsRejecting.class));
             }
         });
+    }
+
+    /*public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Toast.makeText(getApplicationContext(),"Thank You!",Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    Toast.makeText(getApplicationContext(),"WHY!",Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+    }*/
+
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults){
+        //Toast.makeText(getApplicationContext(),grantResults.length,Toast.LENGTH_LONG).show();
+
+        switch(permsRequestCode){
+            case 200:{
+
+                if (grantResults.length>0&&checkIfAllGranted(grantResults,permissions.length-1))//grantResults[0]==PackageManager.PERMISSION_GRANTED&&grantResults[1]==PackageManager.PERMISSION_GRANTED&&grantResults[2]==PackageManager.PERMISSION_GRANTED&&grantResults[3]==PackageManager.PERMISSION_GRANTED) {
+                {
+                    Toast.makeText(getApplicationContext(),"Thank You!",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),"WHY!",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+        }
+    }
+
+    private boolean checkIfAllGranted(int[] grantResults,int length) {
+        for (int i=0;i<length;i++)
+        {
+            if(grantResults[i]!=PackageManager.PERMISSION_GRANTED)
+                return false;
+        }
+        return true;
     }
 }
