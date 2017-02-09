@@ -1,4 +1,4 @@
-package com.android.internal.telephony;
+package com.example.varunrao.drivingtimecallhandler;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,11 +13,13 @@ import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import com.android.internal.telephony.ITelephony;
 import com.example.varunrao.drivingtimecallhandler.MainActivity;
 import com.example.varunrao.drivingtimecallhandler.R;
 
@@ -36,13 +38,24 @@ public class BackgroundCallsRejecting extends Service {
         return null;
     }
     NotificationManager notificationManager;
+
+
+    //Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+    //PendingIntent resultPendingIntent =PendingIntent.getActivity(getApplicationContext(),0,resultIntent,0);
+
+
     Vector<String> callersFromContactList=new Vector<String>();
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Intent traceBackToApp=new Intent(getApplicationContext(),MainActivity.class);
+        PendingIntent resultPendingIntent =PendingIntent.getActivity(getApplicationContext(),0,traceBackToApp,0);
+
         Toast.makeText(getApplicationContext(),"All Calls to be rejected now.", Toast.LENGTH_LONG).show();
         final NotificationCompat.Builder notiBuilder=new NotificationCompat.Builder(this)
                 .setContentTitle("Driving Started")
                 .setContentText(callersFromContactList.size()+" rejected")
+                .setContentIntent(resultPendingIntent)
                 .setSmallIcon(R.drawable.driver_icon)
                 .setOngoing(true);
 
