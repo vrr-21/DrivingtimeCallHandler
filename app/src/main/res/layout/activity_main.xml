@@ -85,4 +85,17 @@
         android:layout_alignStart="@+id/drivingStart"
          />
 
+    <TextView
+        android:text="Not Moving."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/speedDisplay"
+        android:fontFamily="casual"
+        android:textSize="24sp"
+        android:textColor="@color/colorAccent"
+        android:layout_below="@+id/someText"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"/>
+
 </RelativeLayout>
