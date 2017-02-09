@@ -14,6 +14,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
@@ -72,6 +73,12 @@ public class BackgroundCallsRejecting extends Service {
                         {
                             callersFromContactList.add(name);
                             Toast.makeText(getApplicationContext(),"Call From "+name+".Rejected.", Toast.LENGTH_SHORT).show();
+                            //Sending the message to one who has called
+                            String phoneNo=number;
+                            String message="Varun is currently driving. He has been notified, and will call when free.\nSent via Drive time Calls Handler";
+                            SmsManager smsManager=SmsManager.getDefault();
+                            smsManager.sendTextMessage(phoneNo,null,message,null,null);
+                            Toast.makeText(getApplicationContext(), "SMS sent.",Toast.LENGTH_SHORT).show();
                         }
                     }
                     catch(Exception e)

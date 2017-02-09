@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
         String[] perms = {Manifest.permission.READ_CONTACTS,
                           Manifest.permission.READ_PHONE_STATE,
                           Manifest.permission.CALL_PHONE,
-                          Manifest.permission.MODIFY_PHONE_STATE};
+                          Manifest.permission.MODIFY_PHONE_STATE,
+                          Manifest.permission.SEND_SMS};
 
         int permsRequestCode = 200;
 
