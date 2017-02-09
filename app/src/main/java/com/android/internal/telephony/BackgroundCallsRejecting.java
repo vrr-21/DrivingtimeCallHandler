@@ -29,6 +29,7 @@ import java.util.Vector;
  */
 
 public class BackgroundCallsRejecting extends Service {
+    private final int NOTIFICATION_ID=1;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -39,15 +40,16 @@ public class BackgroundCallsRejecting extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(getApplicationContext(),"All Calls to be rejected now.", Toast.LENGTH_LONG).show();
-        NotificationCompat.Builder notiBuilder=new NotificationCompat.Builder(this)
+        final NotificationCompat.Builder notiBuilder=new NotificationCompat.Builder(this)
                 .setContentTitle("Driving Started")
-                .setContentText("All Calls will be rejected")
+                .setContentText(callersFromContactList.size()+" rejected")
                 .setSmallIcon(R.drawable.driver_icon)
                 .setOngoing(true);
 
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0,notiBuilder.build());
+        notificationManager.notify(NOTIFICATION_ID,notiBuilder.build());
+
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(getApplicationContext().TELEPHONY_SERVICE);
         // register PhoneStateListener
         PhoneStateListener callStateListener = new PhoneStateListener() {
@@ -79,6 +81,8 @@ public class BackgroundCallsRejecting extends Service {
                             SmsManager smsManager=SmsManager.getDefault();
                             smsManager.sendTextMessage(phoneNo,null,message,null,null);
                             Toast.makeText(getApplicationContext(), "SMS sent.",Toast.LENGTH_SHORT).show();
+                            notiBuilder.setContentText(callersFromContactList.size()+" calls rejected");
+                            notificationManager.notify(NOTIFICATION_ID,notiBuilder.build());
                         }
                     }
                     catch(Exception e)
@@ -121,7 +125,7 @@ public class BackgroundCallsRejecting extends Service {
             Toast.makeText(getApplicationContext(),n, Toast.LENGTH_LONG).show();
             callersFromContactList.removeElementAt(0);
         }
-        notificationManager.cancel(0);
+        notificationManager.cancel(NOTIFICATION_ID);
         super.onDestroy();
     }
 }
